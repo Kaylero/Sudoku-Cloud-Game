@@ -10,32 +10,98 @@ public class SudokuManager : MonoBehaviour
 
     private bool CheckLine(int line)
     {
-        string square1 = sudokuSquare[line * 3].GetNumber();
-        string square2 = sudokuSquare[line * 3 + 1].GetNumber();
-        string square3 = sudokuSquare[line * 3 + 2].GetNumber();
+        bool result = false;
 
-        return !(square1 == square2 || square2 == square3 || square2 == square3);
+        SudokuSquare square1 = sudokuSquare[line * 3];
+        SudokuSquare square2 = sudokuSquare[line * 3 + 1];
+        SudokuSquare square3 = sudokuSquare[line * 3 + 2];
+
+        if (CheckSquares(square1, square2))
+        {
+            result = false;
+        }
+
+        if (CheckSquares(square2, square3))
+        {
+            result = false;
+        }
+
+        if (CheckSquares(square1, square3))
+        {
+            result = false;
+        }
+
+        return result;
     }
 
     private bool CheckColumn(int column)
     {
-        string square1 = sudokuSquare[column].GetNumber();
-        string square2 = sudokuSquare[column + 3].GetNumber();
-        string square3 = sudokuSquare[column + 6].GetNumber();
+        bool result = true;
 
-        return !(square1 == square2 || square2 == square3 || square2 == square3);
+        SudokuSquare square1 = sudokuSquare[column];
+        SudokuSquare square2 = sudokuSquare[column + 3];
+        SudokuSquare square3 = sudokuSquare[column + 6];
+
+        if (CheckSquares(square1, square2))
+        {
+            result = false;
+        }
+
+        if (CheckSquares(square2, square3))
+        {
+            result = false;
+        }
+
+        if (CheckSquares(square1, square3))
+        {
+            result = false;
+        }
+
+        return result;
+    }
+
+    private bool CheckSquares(SudokuSquare square1, SudokuSquare square2)
+    {
+        bool result = true;
+
+        if (square1.GetNumber() == "")
+        {
+            square1.ChangeColor(Color.red);
+            result = false;
+        }
+
+        if (square2.GetNumber() == "")
+        {
+            square2.ChangeColor(Color.red);
+            result = false;
+        }
+
+        if (square1.GetNumber() == square2.GetNumber())
+        {
+            square1.ChangeColor(Color.red);
+            square2.ChangeColor(Color.red);
+            result = false;
+        }
+
+        return result;
     }
 
     public bool CheckSudoku()
     {
+        bool result = true;
+
         for (int i = 0; i < sudokuSquare.Length/3; i++)
         {
-            if (!CheckLine(i) || !CheckColumn(i))
+            if (!CheckLine(i))
             {
-                return false;
+                result = false;
+            }
+            if (!CheckColumn(i))
+            {
+                result = false;
             }
         }
-        return true;
+        return result;
     }
 
     public void SetNewSudoku(string[] newSudoku)

@@ -6,10 +6,12 @@ using UnityEngine.UI;
 public class SudokuSquare : MonoBehaviour
 {
     private Text number;
+    private Image background;
 
     private void Start()
     {
         number = GetComponentInChildren<Text>();
+        background = GetComponent<Image>();
     }
 
     public void SetNumber(string number)
@@ -20,6 +22,11 @@ public class SudokuSquare : MonoBehaviour
     public string GetNumber()
     {
         return number.text;
+    }
+
+    public void ChangeColor(Color color)
+    {
+        background.color = color;
     }
     
 }
