@@ -5,10 +5,10 @@ using System.Linq;
 
 public class SudokuGenerator
 {
-    public string[] GenerateSudoku(Difficulty difficulty)
+    public string[] GenerateSudoku(int difficulty)
     {
         string[] newSudoku = new string[9];
-        int numbersToGenerate = (int)difficulty;
+        int numbersToGenerate = difficulty;
         int introducedNumbers = 0;
 
         while (introducedNumbers < numbersToGenerate)
@@ -33,11 +33,4 @@ public class SudokuGenerator
 
         return newSudoku;
     }
-}
-
-public enum Difficulty
-{
-    Easy = 5,
-    Medium = 4,
-    Hard = 3
 }

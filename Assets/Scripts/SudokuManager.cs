@@ -114,16 +114,19 @@ public class SudokuManager : MonoBehaviour
 
     public void SetNumber(int x, int y, string number)
     {
-         //TODO: check when number is not in range
+        if (Int32.Parse(number) >= sudokuSquare.Length)
+        {
+            UserMessage.ShowMessage("Number entered must be between 0 and " + sudokuSquare.Length);
+            return;
+        }
+
         if (x >= Math.Sqrt(sudokuSquare.Length) || y >= Math.Sqrt(sudokuSquare.Length))
         {
-            //TODO: display correct number instead of saying just length
-            Debug.LogError("Coordinates number must be between 0 and sudoku length: ");
+            UserMessage.ShowMessage("Coordinates number must be between 0 and " + Math.Sqrt(sudokuSquare.Length));
             return;
         }
 
         int square = y * 3 + x;
-
         sudokuSquare[square].SetNumber(number);
     }
 }
