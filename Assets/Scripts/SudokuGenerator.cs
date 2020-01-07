@@ -5,9 +5,9 @@ using System.Linq;
 
 public class SudokuGenerator
 {
-    public string[] GenerateSudoku(int difficulty)
+    public string[] GenerateSudoku(int difficulty, int length)
     {
-        string[] newSudoku = new string[9];
+        string[] newSudoku = new string[length];
         int numbersToGenerate = difficulty;
         int introducedNumbers = 0;
 
@@ -16,14 +16,14 @@ public class SudokuGenerator
             int generatedNumber = 0;
             do
             {
-                generatedNumber = Random.Range(1, 10);
+                generatedNumber = Random.Range(1, length);
             }
             while (newSudoku.Contains(generatedNumber.ToString()));
 
             int squareToIntroduce = 0;
             do
             {
-                squareToIntroduce = Random.Range(0, 9);
+                squareToIntroduce = Random.Range(0, length);
             }
             while (newSudoku[squareToIntroduce] != null);
 

@@ -19,7 +19,7 @@ public class GameFlowManager : MonoBehaviour
 
     public void GenerateNewSudoku(int difficulty)
     {
-        sudokuManager.SetNewSudoku(sudokuGenerator.GenerateSudoku(difficulty));
+        sudokuManager.SetNewSudoku(sudokuGenerator.GenerateSudoku(difficulty, 9));
     }
 
     public void ValidateSudoku()
