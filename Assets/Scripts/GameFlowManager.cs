@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class GameFlowManager : MonoBehaviour
 {
@@ -14,11 +13,29 @@ public class GameFlowManager : MonoBehaviour
 
     public void Start()
     {
-        GenerateNewSudoku(5);
+        GenerateNewSudoku();
     }
 
-    public void GenerateNewSudoku(int difficulty)
+    public void GenerateNewSudoku()
     {
+        int difficulty;
+
+        switch (SelectDifficultyMenu.difficulty)
+        {
+            case (Difficulty.Easy):
+                difficulty = 5;
+                break;
+            case (Difficulty.Medium):
+                difficulty = 4;
+                break;
+            case (Difficulty.Hard):
+                difficulty = 3;
+                break;
+            default:
+                difficulty = 5;
+                break;
+        }
+
         sudokuManager.SetNewSudoku(sudokuGenerator.GenerateSudoku(difficulty, 9));
     }
 
