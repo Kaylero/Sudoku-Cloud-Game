@@ -15,6 +15,7 @@ public class SudokuGenerator
         newSudoku = new string[length * length];
         this.length = length;
 
+
         for (int currentSudoku = 0; currentSudoku < length; currentSudoku++)
         {
             List<string> innerSudoku = new List<string>();
@@ -55,6 +56,14 @@ public class SudokuGenerator
                     newSudoku[(currentRow * length) + currentColumn] = generatedNumber;
                     innerSudoku.Add(generatedNumber);
                 }
+            }
+        }
+
+        for (int i = 0; i < newSudoku.Length; i++)
+        {
+            if (newSudoku[i] == null)
+            {
+                newSudoku[i] = "";
             }
         }
        
