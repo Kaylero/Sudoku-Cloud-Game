@@ -34,13 +34,13 @@ public class SudokuManager : MonoBehaviour
     {
         if (Int32.Parse(number) >= sudoku.Count)
         {
-            UserMessage.ShowMessage("Number entered must be between 0 and " + sudoku.Count);
+            UserMessage.ShowMessage("Number entered must be between 1 and " + sudoku.Count);
             return;
         }
 
         if (x >= Math.Sqrt(sudoku.Count) || y >= Math.Sqrt(sudoku.Count))
         {
-            UserMessage.ShowMessage("Coordinates number must be between 0 and " + Math.Sqrt(sudoku.Count));
+            UserMessage.ShowMessage("Coordinates number must be between 0 and " + Math.Sqrt(sudoku.Count - 1));
             return;
         }
 

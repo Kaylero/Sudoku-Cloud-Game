@@ -5,23 +5,25 @@ using UnityEngine.UI;
 
 public class SudokuSquare : MonoBehaviour
 {
-    private Text number;
+    private Text numberText;
     private Image background;
+
+    private bool isStarter;
 
     private void Start()
     {
-        number = GetComponentInChildren<Text>();
+        numberText = GetComponentInChildren<Text>();
         background = GetComponent<Image>();
     }
 
     public void SetNumber(string number)
     {
-        this.number.text = number;
+        numberText.text = number;
     }
 
     public string GetNumber()
     {
-        return number.text;
+        return numberText.text;
     }
 
     public void ChangeColor(Color color)

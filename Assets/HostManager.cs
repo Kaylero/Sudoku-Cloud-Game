@@ -73,8 +73,6 @@ public class HostManager : MonoBehaviour
 
     public void Update()
     {
-        Debug.Log("??");
-
         timer -= Time.deltaTime;
 
         var filter = Builders<BsonDocument>.Filter.Empty;
