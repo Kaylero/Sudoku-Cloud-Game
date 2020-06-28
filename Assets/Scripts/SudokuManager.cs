@@ -26,7 +26,9 @@ public class SudokuManager : MonoBehaviour
     {
         for (int i = 0; i < newSudoku.Length; i++)
         {
+            sudoku[i].SetStarter(newSudoku[i] != "");
             sudoku[i].SetNumber(newSudoku[i]);
+            length = newSudoku.Length;
         }
     }
 
@@ -40,11 +42,22 @@ public class SudokuManager : MonoBehaviour
 
         if (x >= Math.Sqrt(sudoku.Count) || y >= Math.Sqrt(sudoku.Count))
         {
-            UserMessage.ShowMessage("Coordinates number must be between 0 and " + Math.Sqrt(sudoku.Count - 1));
+            UserMessage.ShowMessage("Coordinates number must be between 0 and " + (Math.Sqrt(sudoku.Count) - 1));
             return;
         }
 
-        int square = y * 3 + x;
+        int square = y * (int)(Mathf.Sqrt(length)) + x;
         sudoku[square].SetNumber(number);
+    }
+
+    public void SetNumber(SudokuSquare sudokuSquare, string number)
+    {
+        if (Int32.Parse(number) >= sudoku.Count)
+        {
+            UserMessage.ShowMessage("Number entered must be between 1 and " + sudoku.Count);
+            return;
+        }
+
+        sudokuSquare.SetNumber(number);
     }
 }

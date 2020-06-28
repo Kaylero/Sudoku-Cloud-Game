@@ -16,6 +16,30 @@ public class SudokuSquare : MonoBehaviour
         background = GetComponent<Image>();
     }
 
+    public void SetStarter(bool isStarter)
+    {
+        this.isStarter = isStarter;
+
+        if (isStarter)
+        {
+            try
+            {
+                numberText.fontStyle = FontStyle.Bold;
+
+            }
+            catch { Debug.Log(""); }
+        }
+        else
+        {
+            numberText.fontStyle = FontStyle.Italic;
+        }
+    }
+
+    public bool GetStarter()
+    {
+        return isStarter;
+    }
+
     public void SetNumber(string number)
     {
         numberText.text = number;

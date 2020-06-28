@@ -6,6 +6,8 @@ public class GameFlowManager : MonoBehaviour
 {
     [SerializeField]
     private SudokuManager sudokuManager;
+    [SerializeField]
+    private SudokuInputManager sudokuInputManager = new SudokuInputManager();
     private SudokuGenerator sudokuGenerator = new SudokuGenerator();
 
     private readonly string VALIDATE_OK_MESSAGE = "Sudoku solved";
@@ -37,6 +39,7 @@ public class GameFlowManager : MonoBehaviour
         }
 
         sudokuManager.SetNewSudoku(sudokuGenerator.GenerateSudoku(difficulty, 9));
+        sudokuInputManager.ClearCurrentSquareInput();
     }
 
     public void ValidateSudoku()

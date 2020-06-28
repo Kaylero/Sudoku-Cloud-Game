@@ -15,12 +15,20 @@ public class EnterNumber : MonoBehaviour
 
     [SerializeField]
     private SudokuManager sudokuManager;
+    [SerializeField]
+    private SudokuInputManager sudokuInputManager;
 
     public void SetNumber()
     {
-        if (x.text != "" && y.text != "" && number.text != "")
+        if (sudokuInputManager.GetCurrentSudokuSquareInput() == null)
         {
-            sudokuManager.SetNumber(Int32.Parse(x.text), Int32.Parse(y.text), number.text);
+            UserMessage.ShowMessage("Choose a square by clicking it.");
+            return;
+        }
+
+        if (number.text != "")
+        {
+            sudokuManager.SetNumber(sudokuInputManager.GetCurrentSudokuSquareInput().GetSudokuSquare(), number.text);
         }
     }
 }
