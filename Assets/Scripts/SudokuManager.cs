@@ -60,4 +60,56 @@ public class SudokuManager : MonoBehaviour
 
         sudokuSquare.SetNumber(number);
     }
+
+    //TODO: Move this to a class that stores the lastchecked position
+    public bool IsSudokuComplete()
+    {
+        bool complete = false;
+        int index = 0;
+
+        while (!complete)
+        {
+            if (index >= sudoku.Count)
+            {
+                complete = true;
+            }
+
+            if (sudoku[index].GetNumber() == "")
+            {
+                return false;
+            }
+
+            index++;
+        }
+
+        return true;
+    }
+
+    public Vector2 GetNextIncompleteSquare()
+    {
+        bool complete = false;
+        int index = 0;
+
+        while (!complete)
+        {
+            if (index >= sudoku.Count)
+            {
+                complete = true;
+            }
+
+            if (sudoku[index].GetNumber() == "")
+            {
+                return new Vector2(index % length, index / length);
+            }
+
+            index++;
+        }
+
+        return new Vector2(55,55);
+    }
+
+    public List<SudokuSquare> GetSudoku()
+    {
+        return sudoku;
+    }
 }

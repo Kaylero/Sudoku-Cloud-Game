@@ -10,7 +10,7 @@ public class SudokuSquare : MonoBehaviour
 
     private bool isStarter;
 
-    private void Start()
+    private void Awake()
     {
         numberText = GetComponentInChildren<Text>();
         background = GetComponent<Image>();
@@ -22,16 +22,15 @@ public class SudokuSquare : MonoBehaviour
 
         if (isStarter)
         {
-            try
-            {
-                numberText.fontStyle = FontStyle.Bold;
-
-            }
-            catch { Debug.Log(""); }
+            numberText.fontStyle = FontStyle.Bold;
         }
         else
         {
-            numberText.fontStyle = FontStyle.Italic;
+            try
+            {
+                numberText.fontStyle = FontStyle.Italic;
+            }
+            catch { };
         }
     }
 

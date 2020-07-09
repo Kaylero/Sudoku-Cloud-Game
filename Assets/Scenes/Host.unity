@@ -836,7 +836,7 @@ GameObject:
   - component: {fileID: 1073391245}
   - component: {fileID: 1073391244}
   m_Layer: 5
-  m_Name: LocalTimer (1)
+  m_Name: ServerTimer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1513,7 +1513,7 @@ MonoBehaviour:
   sudokuManager: {fileID: 669858195}
   localTimer: {fileID: 1360346152}
   serverTimer: {fileID: 1073391244}
-  timer: 30
+  timer: 2
 --- !u!4 &1928494160
 Transform:
   m_ObjectHideFlags: 0

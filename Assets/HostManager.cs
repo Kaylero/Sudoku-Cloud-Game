@@ -5,6 +5,9 @@ using MongoDB.Driver;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UI;
@@ -22,7 +25,7 @@ public class HostManager : MonoBehaviour
     MongoClient client;
     IMongoDatabase database;
 
-    public float timer = 30f;
+    public float timer = -5f;
 
     public void Start()
     {
@@ -37,61 +40,105 @@ public class HostManager : MonoBehaviour
 
         var filter = Builders<BsonDocument>.Filter.Empty;
 
-        var sdocument = sudokuDocument.ToBsonDocument().ToJson();
-        var tdocument = timerDocument.ToBsonDocument().ToJson();
+        //var sdocument = sudokuDocument.ToBsonDocument().ToJson();
         var cdocument = coordinatesDocument.ToBsonDocument().ToJson();
 
-        var xd = JsonUtility.FromJson<SudokuJson>(sudokuDocument.ToBsonDocument().ToJson());
-        var xd1 = JsonUtility.FromJson<TimerJson>(timerDocument.ToBsonDocument().ToJson());
-        var xd2 = JsonUtility.FromJson<CoordinatesJson>(coordinatesDocument.ToBsonDocument().ToJson());
 
         client = new MongoClient("mongodb+srv://test:tfg@cluster0-ayt30.mongodb.net/test?retryWrites=true&w=majority");
         database = client.GetDatabase("test");
         var sudokuCollection = database.GetCollection<BsonDocument>("testHost");
-        var timerCollection = database.GetCollection<BsonDocument>("testHostTimer");
 
+        //Create new sudoku
         sudokuCollection.DeleteMany(filter);
-        timerCollection.DeleteMany(filter);
-
         sudokuCollection.InsertOne(sudokuDocument.ToBsonDocument());
-        timerCollection.InsertOne(timerDocument.ToBsonDocument());
-
 
         var bsonList = sudokuCollection.Find(new BsonDocument()).ToList();
-        var bsonList2 = timerCollection.Find(new BsonDocument()).ToList();
-
-        foreach (var bson in bsonList2)
-        {
-            Debug.Log(bson.ToString());
-            Debug.Log(bson[0].ToString());
-            Debug.Log(bson[1].ToString());
-        }
 
         sudokuManager.SetNewSudoku(ParseSudokuString(bsonList[0][1].ToString()));
 
+        //Clean response collection
+        var responseCollection = database.GetCollection<BsonDocument>("responses");
+        responseCollection.DeleteMany(filter);
     }
 
     public void Update()
     {
         timer -= Time.deltaTime;
-
         var filter = Builders<BsonDocument>.Filter.Empty;
-        var timerDocument = new TimerDocument(timer);
+
         var timerCollection = database.GetCollection<BsonDocument>("testHostTimer");
 
         if (timer <= 0)
         {
-            timer = 30f;
+            timer = 40f;
+
+            //Process responses 
+            var responseCollection = database.GetCollection<BsonDocument>("responses");
+
+            var responses = responseCollection.Find(new BsonDocument()).ToList();
+
+            var array = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            foreach (var response in responses)
+            {
+                array[Int32.Parse(response[1].ToString())]++;
+            }
+
+            //TODO: make this get a random instead of the biggest
+            int max = 0;
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (array[i] >= max)
+                {
+                    max = i;
+                }
+            }
+
+            Vector2 square = sudokuManager.GetNextIncompleteSquare();
+            sudokuManager.SetNumber((int)square.x, (int)square.y, max.ToString());
+
+            responseCollection.DeleteMany(filter);
+
+            //Insert Sudoku
+
+            var sudokuDocument = new SudokuDocument(SudokuParser.SudokuSquareListToStringArray(sudokuManager.GetSudoku()));
+
+            var sudokuCollection = database.GetCollection<BsonDocument>("testHost");
+            sudokuCollection.DeleteMany(filter);
+            sudokuCollection.InsertOne(sudokuDocument.ToBsonDocument());
+
+            //Create new square 
+            var squareCollection = database.GetCollection<BsonDocument>("square");
+            squareCollection.DeleteMany(filter);
+            square = sudokuManager.GetNextIncompleteSquare();
+
+            var squareDocument = new SquareDocument((int)square.x, (int)square.y);
+
+            squareCollection.InsertOne(squareDocument.ToBsonDocument());
         }
         else
         {
             localTimer.text = timer.ToString();
+
+            var timerDocument = new TimerDocument(timer);
 
             timerCollection.DeleteMany(filter);
             timerCollection.InsertOne(timerDocument.ToBsonDocument());
         }
 
         serverTimer.text = timerCollection.Find(new BsonDocument()).ToList()[0][1].ToString();
+    }
+
+    static string ConvertStringArrayToString(string[] array)
+    {
+        // Concatenate all the elements into a StringBuilder.
+        StringBuilder builder = new StringBuilder();
+        foreach (string value in array)
+        {
+            builder.Append(value);
+            builder.Append('.');
+        }
+        return builder.ToString();
     }
 
     public BsonArray ToBsonDocumentArray(IEnumerable list)
@@ -109,7 +156,6 @@ public class HostManager : MonoBehaviour
         return timer;
     }
 
-    bool openedQuote = false;
     string lastChar = "";
 
     public string[] ParseSudokuString(string sudoku)
@@ -139,7 +185,32 @@ public class HostManager : MonoBehaviour
         Regex rg = new Regex(@"^[0-9]*$");
         return rg.IsMatch(strToCheck);
     }
+}
+[BsonDiscriminator("square")]
+public class SquareDocument
+{
+    [BsonElement]
+    public Int32 x;
+    [BsonElement]
+    public Int32 y;
 
+    public SquareDocument(Int32 x, Int32 y)
+    {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+[BsonDiscriminator("response")]
+public class ResponseDocument
+{
+    [BsonElement]
+    public Int32 number;
+
+    public ResponseDocument(Int32 number)
+    {
+        this.number = number;
+    }
 }
 
 [BsonDiscriminator("sudoku")]
